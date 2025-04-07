@@ -36,30 +36,27 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
-    const dropdownItems = {
+    // Memoize dropdownItems to prevent unnecessary recreations
+    const dropdownItems = useMemo(() => ({
         Shop: ['New Arrivals', 'Bestsellers', 'Sale'],
         Women: ['Dresses', 'Tops', 'Bottoms', 'Outerwear'],
         Men: ['Shirts', 'Pants', 'Jackets', 'Activewear'],
         Kids: ['Baby (0-24m)', 'Toddlers (2-5)', 'Kids (6-12)'],
         Accessories: ['Bags', 'Hats', 'Jewelry', 'Shoes'],
         Collections: ['Summer', 'Winter Essentials', 'Limited Edition'],
-    };
+    }), []); // Empty dependency array means this object is created once
 
     // Determine active main category based on pathname
     const activeCategory = useMemo(() => {
         if (!pathname) return null;
 
-        // Convert pathname to lowercase for case-insensitive comparison
         const lowerPath = pathname.toLowerCase();
 
-        // Check each category and its items
         for (const [category, items] of Object.entries(dropdownItems)) {
-            // Check if pathname includes category name (lowercase)
             if (lowerPath.includes(category.toLowerCase())) {
                 return category;
             }
 
-            // Check if pathname includes any of the items (lowercase)
             for (const item of items) {
                 if (lowerPath.includes(item.toLowerCase())) {
                     return category;

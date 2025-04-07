@@ -22,9 +22,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                 <Image
                     src="/Apparel.webp"
                     alt="hero"
-                    width={outerHeight}
-                    height={outerHeight}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[350px]"
+                    className="h-full w-full object-cover transition duration-500"
                 />
                 {/* Reduced Opacity Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-white/25" />

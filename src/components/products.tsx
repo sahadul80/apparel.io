@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 // Dynamically import Modal to avoid SSR issues
 const Modal = dynamic(() => import('react-modal'), {
     ssr: false,
-    loading: () => null
+    loading: () => null,
 });
 
 // Define types for the product
@@ -18,6 +18,8 @@ type Product = {
     image: string;
     inStock: boolean;
     colors: string[];
+    description?: string;
+    rating?: number;
 };
 
 type Filters = {
@@ -25,6 +27,7 @@ type Filters = {
     price: { from: string; to: string };
     colors: string[];
     search: string;
+    rating?: number;
 };
 
 type CartItem = {
@@ -42,57 +45,63 @@ interface ProductCollectionProps {
 const testProducts: Product[] = [
     {
         id: 1,
-        name: 'Basic Tee',
+        name: 'Premium Cotton Tee',
         price: 24.0,
-        image:
-            'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+        image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
         inStock: true,
         colors: ['red', 'blue'],
+        description: 'Soft premium cotton t-shirt with comfortable fit and durable quality.',
+        rating: 4.5,
     },
     {
         id: 2,
-        name: 'Classic Tee',
+        name: 'Classic Fit Shirt',
         price: 29.0,
-        image:
-            'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
         inStock: false,
         colors: ['green', 'purple'],
+        description: 'Classic fit shirt with button-down collar and premium fabric.',
+        rating: 4.2,
     },
     {
         id: 3,
-        name: 'Premium Tee',
+        name: 'Slim Fit Jeans',
         price: 34.0,
-        image:
-            'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+        image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
         inStock: true,
-        colors: ['blue', 'teal'],
+        colors: ['blue', 'black'],
+        description: 'Slim fit jeans with stretch technology for maximum comfort.',
+        rating: 4.7,
     },
     {
         id: 4,
-        name: 'Basic Tee',
-        price: 24.0,
-        image:
-            'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+        name: 'Athletic Shorts',
+        price: 22.0,
+        image: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
         inStock: true,
-        colors: ['red', 'blue'],
+        colors: ['gray', 'navy'],
+        description: 'Breathable athletic shorts with moisture-wicking technology.',
+        rating: 4.3,
     },
     {
         id: 5,
-        name: 'Classic Tee',
-        price: 29.0,
-        image:
-            'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
-        inStock: false,
-        colors: ['green', 'purple'],
+        name: 'Wool Blend Sweater',
+        price: 45.0,
+        image: 'https://images.unsplash.com/photo-1551232864-3f0890e580d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
+        inStock: true,
+        colors: ['cream', 'charcoal'],
+        description: 'Warm wool blend sweater perfect for cold weather.',
+        rating: 4.8,
     },
     {
         id: 6,
-        name: 'Premium Tee',
-        price: 34.0,
-        image:
-            'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
-        inStock: true,
-        colors: ['blue', 'teal'],
+        name: 'Leather Wallet',
+        price: 39.0,
+        image: 'https://images.unsplash.com/photo-1591561954555-607968c989ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80',
+        inStock: false,
+        colors: ['brown', 'black'],
+        description: 'Genuine leather wallet with multiple card slots.',
+        rating: 4.6,
     },
 ];
 
@@ -103,6 +112,7 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         price: { from: '', to: '' },
         colors: [],
         search: '',
+        rating: 0,
     });
     const [products, setProducts] = useState<Product[]>([]);
     const [animatingProductId, setAnimatingProductId] = useState<number | null>(null);
@@ -110,6 +120,7 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
     const [quantity, setQuantity] = useState<number>(1);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [showFilters, setShowFilters] = useState<boolean>(false);
+    const [selectedColor, setSelectedColor] = useState<string>('');
 
     const initialProducts = useMemo(() => testProducts, []);
 
@@ -117,9 +128,9 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         setProducts(initialProducts);
     }, [initialProducts]);
 
-    type SortBy = 'Title,ASC' | 'Title,DESC' | 'Price,ASC' | 'Price,DESC' | '';
+    type SortBy = 'Title,ASC' | 'Title,DESC' | 'Price,ASC' | 'Price,DESC' | 'Rating,ASC' | 'Rating,DESC' | '';
 
-    const { search, availability, price, colors } = filters;
+    const { search, availability, price, colors, rating } = filters;
 
     const filteredProducts = useMemo(() => {
         let filtered = [...products];
@@ -128,7 +139,8 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
             if (!search) return products;
             const searchTerm = search.toLowerCase();
             return products.filter(product =>
-                product.name.toLowerCase().includes(searchTerm)
+                product.name.toLowerCase().includes(searchTerm) ||
+                (product.description && product.description.toLowerCase().includes(searchTerm))
             );
         };
 
@@ -163,10 +175,15 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
             );
         };
 
+        const applyRatingFilter = (products: Product[], rating: number): Product[] => {
+            if (!rating || rating === 0) return products;
+            return products.filter(product => product.rating && product.rating >= rating);
+        };
+
         const applySorting = (products: Product[], sortBy: SortBy): Product[] => {
             if (!sortBy) return products;
 
-            const [key, order] = sortBy.split(',') as ['name' | 'price', 'ASC' | 'DESC'];
+            const [key, order] = sortBy.split(',') as ['name' | 'price' | 'rating', 'ASC' | 'DESC'];
             return [...products].sort((a, b) => {
                 if (key === "name") {
                     return order === "ASC"
@@ -178,6 +195,11 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
                         ? a.price - b.price
                         : b.price - a.price;
                 }
+                if (key === "rating" && a.rating && b.rating) {
+                    return order === "ASC"
+                        ? a.rating - b.rating
+                        : b.rating - a.rating;
+                }
                 return 0;
             });
         };
@@ -187,11 +209,11 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         filtered = applyAvailabilityFilter(filtered, availability);
         filtered = applyPriceRangeFilter(filtered, price);
         filtered = applyColorFilter(filtered, colors);
+        filtered = applyRatingFilter(filtered, rating || 0);
         filtered = applySorting(filtered, sortBy as SortBy);
 
         return filtered;
-    }, [products, search, availability, price, colors, sortBy]);
-
+    }, [products, search, availability, price, colors, sortBy, rating]);
 
     const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSortBy(e.target.value as SortBy);
@@ -235,14 +257,23 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         }));
     };
 
+    const handleRatingChange = (rating: number) => {
+        setFilters(prev => ({
+            ...prev,
+            rating: prev.rating === rating ? 0 : rating
+        }));
+    };
+
     const resetFilters = () => {
         setFilters({
             availability: [],
             price: { from: '', to: '' },
             colors: [],
             search: '',
+            rating: 0,
         });
         setSortBy('');
+        setSelectedColor('');
     };
 
     const handleAddToCart = (product: Product, qty: number = 1) => {
@@ -268,8 +299,12 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
             scale: [0.9, 0.6, 0.3, 0.1],
             x: 400,
             y: -300,
-            opacity: [1, 0.5, 1],
+            opacity: [1, 0.5, 0],
             transition: { duration: 0.4, ease: 'easeInOut' },
+        },
+        hover: {
+            scale: 1.02,
+            transition: { duration: 0.2 },
         },
     };
 
@@ -277,11 +312,13 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         setSelectedProduct(product);
         setQuantity(1);
         setIsModalOpen(true);
+        setSelectedColor(product.colors[0] || '');
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedProduct(null);
+        setSelectedColor('');
     };
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -295,287 +332,420 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         exit: { opacity: 0, y: 50 }
     };
 
+    const renderStars = (rating: number = 0) => {
+        return (
+            <div className="flex items-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                        key={star}
+                        className={`w-4 h-4 ${star <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                    >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                ))}
+                <span className="text-xs text-gray-500 ml-1">({rating})</span>
+            </div>
+        );
+    };
+
     return (
-        <section>
+        <section className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-                <header>
-                    <h2 className="text-xl font-bold text-gray-900 sm:text-3xl">Product Collection</h2>
-                    <p className="mt-4 max-w-md text-gray-500">
-                        Browse our collection of premium products with advanced filtering options.
+                <header className="mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">Our Collection</h2>
+                    <p className="mt-2 max-w-full text-gray-600 dark:text-gray-300">
+                        Discover premium products curated just for you
                     </p>
                 </header>
 
-                <div className="mt-6 flex flex-col sm:flex-row gap-4 items-center">
-                    <div className="relative w-full sm:w-64">
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            value={filters.search}
-                            onChange={handleSearchChange}
-                            className="w-full rounded-sm border-gray-300 text-sm p-2 pl-8"
-                        />
-                        <svg
-                            className="absolute left-2 top-2.5 h-4 w-4 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-
-                    <button
-                        onClick={() => setShowFilters(!showFilters)}
-                        className="flex items-center gap-2 text-sm border border-gray-300 px-3 py-2 rounded-sm hover:bg-gray-50"
-                    >
-                        <span>Filters & Sorting</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className={`size-4 transition-transform ${showFilters ? 'rotate-180' : ''}`}
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                </div>
-
-                {showFilters && (
-                    <div className="mt-4 p-4 border border-gray-200 rounded-sm bg-white shadow-xs">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label htmlFor="SortBy" className="block text-xs font-medium text-gray-700 mb-1">
-                                    Sort By
-                                </label>
-                                <select
-                                    id="SortBy"
-                                    className="w-full rounded-sm border-gray-300 text-sm p-2"
-                                    value={sortBy}
-                                    onChange={handleSortChange}
-                                >
-                                    <option value="">Sort By</option>
-                                    <option value="Title, DESC">Title, DESC</option>
-                                    <option value="Title, ASC">Title, ASC</option>
-                                    <option value="Price, DESC">Price, DESC</option>
-                                    <option value="Price, ASC">Price, ASC</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <p className="block text-xs font-medium text-gray-700 mb-1">Availability</p>
-                                <div className="space-y-1">
-                                    {['In Stock', 'Out of Stock'].map((option) => (
-                                        <div key={option} className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                id={`Filter${option.replace(' ', '')}`}
-                                                value={option}
-                                                checked={filters.availability.includes(option)}
-                                                onChange={handleAvailabilityChange}
-                                                className="size-4 rounded-sm border-gray-300"
-                                            />
-                                            <label htmlFor={`Filter${option.replace(' ', '')}`} className="ml-2 text-sm text-gray-700">
-                                                {option}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div>
-                                <p className="block text-xs font-medium text-gray-700 mb-1">Price Range</p>
-                                <div className="flex gap-2">
-                                    <div className="flex-1">
-                                        <label htmlFor="FilterPriceFrom" className="sr-only">From</label>
-                                        <input
-                                            type="number"
-                                            id="FilterPriceFrom"
-                                            placeholder="From"
-                                            value={filters.price.from}
-                                            onChange={handlePriceChange}
-                                            className="w-full rounded-sm border-gray-300 text-sm p-2"
-                                            min="0"
-                                        />
-                                    </div>
-                                    <div className="flex-1">
-                                        <label htmlFor="FilterPriceTo" className="sr-only">To</label>
-                                        <input
-                                            type="number"
-                                            id="FilterPriceTo"
-                                            placeholder="To"
-                                            value={filters.price.to}
-                                            onChange={handlePriceChange}
-                                            className="w-full rounded-sm border-gray-300 text-sm p-2"
-                                            min="0"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="md:col-span-3">
-                                <p className="block text-xs font-medium text-gray-700 mb-1">Colors</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {['Red', 'Blue', 'Green', 'Purple', 'Teal'].map((color) => (
-                                        <div key={color} className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                id={`Filter${color}`}
-                                                value={color.toLowerCase()}
-                                                checked={filters.colors.includes(color.toLowerCase())}
-                                                onChange={handleColorChange}
-                                                className="size-4 rounded-sm border-gray-300"
-                                            />
-                                            <label htmlFor={`Filter${color}`} className="ml-1 text-sm text-gray-700">
-                                                {color}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-4 flex justify-end">
-                            <button
-                                onClick={resetFilters}
-                                className="text-sm text-gray-700 underline underline-offset-2 hover:text-gray-900"
+                {/* Search and Filter Controls */}
+                <div className="mb-8">
+                    <div className="flex justify-between gap-4">
+                        <div className="relative flex-1">
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                value={filters.search}
+                                onChange={handleSearchChange}
+                                className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder-gray-400"
+                            />
+                            <svg
+                                className="absolute left-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                             >
-                                Reset all filters
-                            </button>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                         </div>
+
+                        <button
+                            onClick={() => setShowFilters(!showFilters)}
+                            className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700"
+                        >
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="text-gray-600 dark:text-gray-400"
+                            >
+                                <path d="M4 5L10 5M10 5C10 6.10457 10.8954 7 12 7C13.1046 7 14 6.10457 14 5M10 5C10 3.89543 10.8954 3 12 3C13.1046 3 14 3.89543 14 5M14 5L20 5M4 12H16M16 12C16 13.1046 16.8954 14 18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12ZM8 19H20M8 19C8 17.8954 7.10457 17 6 17C4.89543 17 4 17.8954 4 19C4 20.1046 4.89543 21 6 21C7.10457 21 8 20.1046 8 19Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className={`h-4 w-4 transition-transform ${showFilters ? 'rotate-180' : ''}`}
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
                     </div>
-                )}
 
-                <div className="mt-6">
-                    <div className="relative">
-                        <div className="overflow-x-auto pb-4">
-                            <ul className="flex gap-4 w-max sm:w-full sm:grid sm:grid-cols-2 lg:grid-cols-3">
-                                {filteredProducts.map((product) => {
-                                    const isAnimating = product.id === animatingProductId;
-
-                                    return (
-                                        <motion.li
-                                            key={product.id}
-                                            className="group relative w-64 sm:w-full"
-                                            variants={cardVariants}
-                                            initial="initial"
-                                            animate={isAnimating ? 'animate' : 'initial'}
-                                            onAnimationComplete={isAnimating ? onAnimationComplete : undefined}
+                    {/* Expanded Filters Panel */}
+                    {showFilters && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="mt-4 overflow-hidden"
+                        >
+                            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                                    {/* Sort By */}
+                                    <div>
+                                        <label htmlFor="SortBy" className="block text-sm text-gray-700 dark:text-gray-300 mb-2">
+                                            Sort By
+                                        </label>
+                                        <select
+                                            id="SortBy"
+                                            className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            value={sortBy}
+                                            onChange={handleSortChange}
                                         >
-                                            <div
-                                                className="block overflow-hidden cursor-pointer"
-                                                onClick={() => openProductModal(product)}
-                                            >
-                                                <Image
-                                                    src={product.image}
-                                                    alt={product.name}
-                                                    width={350}
-                                                    height={450}
-                                                    className="h-[250px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[350px]"
-                                                />
-                                                <div className="relative bg-white pt-3">
-                                                    <h3 className="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                                                        {product.name}
-                                                    </h3>
-                                                    <p className="mt-2">
-                                                        <span className="tracking-wider text-gray-900">
-                                                            ${product.price.toFixed(2)}
-                                                        </span>
-                                                    </p>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleAddToCart(product);
-                                                        }}
-                                                        className="mt-4 w-full bg-gray-100 py-2 text-sm font-medium transition hover:bg-gray-200"
-                                                        disabled={!product.inStock}
-                                                    >
-                                                        {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-                                                    </button>
+                                            <option value="">Default</option>
+                                            <option value="Title,ASC">Name (A-Z)</option>
+                                            <option value="Title,DESC">Name (Z-A)</option>
+                                            <option value="Price,ASC">Price (Low to High)</option>
+                                            <option value="Price,DESC">Price (High to Low)</option>
+                                            <option value="Rating,ASC">Rating (Low to High)</option>
+                                            <option value="Rating,DESC">Rating (High to Low)</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Availability */}
+                                    <div>
+                                        <p className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Availability</p>
+                                        <div className="space-y-2">
+                                            {['In Stock', 'Out of Stock'].map((option) => (
+                                                <div key={option} className="flex items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        id={`Filter${option.replace(' ', '')}`}
+                                                        value={option}
+                                                        checked={filters.availability.includes(option)}
+                                                        onChange={handleAvailabilityChange}
+                                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+                                                    />
+                                                    <label htmlFor={`Filter${option.replace(' ', '')}`} className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                                        {option}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Price Range */}
+                                    <div>
+                                        <p className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Price Range</p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label htmlFor="FilterPriceFrom" className="sr-only">From</label>
+                                                <div className="relative">
+                                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <span className="text-gray-500 sm:text-sm">$</span>
+                                                    </div>
+                                                    <input
+                                                        type="number"
+                                                        id="FilterPriceFrom"
+                                                        placeholder="From"
+                                                        value={filters.price.from}
+                                                        onChange={handlePriceChange}
+                                                        className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-7 pr-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                        min="0"
+                                                    />
                                                 </div>
                                             </div>
-                                        </motion.li>
-                                    );
-                                })}
-                            </ul>
+                                            <div>
+                                                <label htmlFor="FilterPriceTo" className="sr-only">To</label>
+                                                <div className="relative">
+                                                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <span className="text-gray-500 sm:text-sm">$</span>
+                                                    </div>
+                                                    <input
+                                                        type="number"
+                                                        id="FilterPriceTo"
+                                                        placeholder="To"
+                                                        value={filters.price.to}
+                                                        onChange={handlePriceChange}
+                                                        className="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-7 pr-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                        min="0"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Colors */}
+                                    <div>
+                                        <p className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Colors</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {['Red', 'Blue', 'Green', 'Purple', 'Teal', 'Black', 'Gray', 'Navy', 'Cream', 'Charcoal', 'Brown'].map((color) => (
+                                                <div key={color} className="flex items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        id={`Filter${color}`}
+                                                        value={color.toLowerCase()}
+                                                        checked={filters.colors.includes(color.toLowerCase())}
+                                                        onChange={handleColorChange}
+                                                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+                                                    />
+                                                    <label htmlFor={`Filter${color}`} className="ml-1 text-sm text-gray-700 dark:text-gray-300">
+                                                        {color}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Rating */}
+                                    <div className="md:col-span-2">
+                                        <p className="block text-sm text-gray-700 dark:text-gray-300 mb-2">Minimum Rating</p>
+                                        <div className="flex items-center space-x-2">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <button
+                                                    key={star}
+                                                    type="button"
+                                                    onClick={() => handleRatingChange(star)}
+                                                    aria-label={`Set minimum rating to ${star} stars`}
+                                                    className={`flex items-center ${filters.rating && star <= filters.rating ? 'text-yellow-400' : 'text-gray-300'
+                                                        }`}
+                                                >
+                                                    <svg
+                                                        className="h-5 w-5"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 20 20"
+                                                    >
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-6 flex justify-end">
+                                    <button
+                                        onClick={resetFilters}
+                                        className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                                    >
+                                        Reset all filters
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </div>
+
+                {/* Product Grid */}
+                <div className="mt-4">
+                    {filteredProducts.length === 0 ? (
+                        <div className="text-center py-12">
+                            <svg
+                                className="mx-auto h-12 w-12 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">No products found</h3>
+                            <p className="mt-1 text-gray-500 dark:text-gray-400">Try adjusting your search or filter to find what you are looking for.</p>
+                            <div className="mt-6">
+                                <button
+                                    onClick={resetFilters}
+                                    className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                >
+                                    Reset all filters
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+                            {filteredProducts.map((product) => {
+                                const isAnimating = product.id === animatingProductId;
+
+                                return (
+                                    <motion.div
+                                        key={product.id}
+                                        className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+                                        variants={cardVariants}
+                                        initial="initial"
+                                        animate={isAnimating ? 'animate' : 'initial'}
+                                        whileHover="hover"
+                                        onAnimationComplete={isAnimating ? onAnimationComplete : undefined}
+                                    >
+                                        <div
+                                            className="aspect-square overflow-hidden bg-gray-100 cursor-pointer"
+                                            onClick={() => openProductModal(product)}
+                                        >
+                                            <Image
+                                                src={product.image}
+                                                alt={product.name}
+                                                width={600}
+                                                height={600}
+                                                className="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+                                                priority
+                                            />
+                                        </div>
+
+                                        <div className="p-2">
+                                            <div className="flex items-center">
+                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                                    <button
+                                                        onClick={() => openProductModal(product)}
+                                                        className="focus:outline-none"
+                                                    >
+                                                        <span aria-hidden="true" className="absolute inset-0" />
+                                                        {product.name}
+                                                    </button>
+                                                </h3>
+                                            </div>
+
+                                            <div className="mt-1">
+                                                {renderStars(product.rating)}
+                                            </div>
+
+                                            <div className="mt-1 flex items-center space-x-1">
+                                                <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                    ${product.price.toFixed(2)}
+                                                </p>
+                                            </div>
+
+                                            <div className="mt-6">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleAddToCart(product);
+                                                    }}
+                                                    className={`w-full rounded-md py-2 px-4 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${product.inStock
+                                                            ? 'bg-indigo-600 hover:bg-indigo-700'
+                                                            : 'bg-gray-400 cursor-not-allowed'
+                                                        }`}
+                                                    disabled={!product.inStock}
+                                                >
+                                                    {product.inStock ? 'View Details' : 'Out of Stock'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             </div>
 
+            {/* Product Modal */}
             <AnimatePresence>
                 {isModalOpen && selectedProduct && (
                     <Modal
                         isOpen={isModalOpen}
                         onRequestClose={closeModal}
                         contentLabel="Product Details"
-                        className="fixed inset-0 flex items-center justify-center p-4 z-50"
-                        overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
+                        className="fixed inset-0 flex items-center justify-center p-2 z-50 focus:outline-none"
+                        overlayClassName="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40 transition-opacity"
                         shouldCloseOnOverlayClick={true}
+                        ariaHideApp={false}
                     >
                         <motion.div
-                            className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+                            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto dark:bg-gray-800"
                             variants={modalVariants}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
                             transition={{ duration: 0.2 }}
                         >
-                            <button
-                                onClick={closeModal}
-                                className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-5 h-5"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                                <div className="relative h-64 md:h-96">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                                <div className="relative h-64 md:h-96 rounded-lg overflow-hidden bg-gray-100">
                                     <Image
                                         src={selectedProduct.image}
                                         alt={selectedProduct.name}
                                         fill
-                                        className="object-cover rounded-lg"
+                                        className="object-cover"
                                         priority
                                     />
                                 </div>
+
                                 <div>
-                                    <h2 className="text-lg md:text-xl font-bold text-gray-900">{selectedProduct.name}</h2>
-                                    <p className="text-md md:text-lg mt-1 text-gray-900">${selectedProduct.price.toFixed(2)}</p>
-                                    <p className={`mt-1 text-sm ${selectedProduct.inStock ? 'text-green-600' : 'text-red-600'}`}>
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <h2 className="text-l font-bold text-gray-900 dark:text-white">{selectedProduct.name}</h2>
+                                            <div className="mt-1 flex items-center">
+                                                {renderStars(selectedProduct.rating)}
+                                                <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
+                                                    ({selectedProduct.rating} rating)
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p className="text-l font-bold text-gray-900 dark:text-white">${selectedProduct.price.toFixed(2)}</p>
+                                    </div>
+
+                                    <p className={`mt-1 text-sm ${selectedProduct.inStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                                        }`}>
                                         {selectedProduct.inStock ? 'In Stock' : 'Out of Stock'}
                                     </p>
 
-                                    <div className="mt-3">
-                                        <h3 className="text-xs font-medium text-gray-900">Colors</h3>
-                                        <div className="flex mt-1 space-x-2">
+                                    <p className="mt-1 text-gray-700 dark:text-gray-300">
+                                        {selectedProduct.description}
+                                    </p>
+
+                                    <div className="mt-2">
+                                        <h3 className="text-sm font-medium text-gray-900 dark:text-white">Colors</h3>
+                                        <div className="mt-1 flex flex-wrap gap-2">
                                             {selectedProduct.colors.map((color) => (
-                                                <span
+                                                <button
                                                     key={color}
-                                                    className="w-5 h-5 rounded-full border border-gray-200"
+                                                    type="button"
+                                                    onClick={() => setSelectedColor(color)}
+                                                    className={`h-8 w-8 rounded-full border-2 ${selectedColor === color ? 'border-indigo-500' : 'border-transparent'} focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                                                     style={{ backgroundColor: color }}
-                                                    title={color}
+                                                    aria-label={`Select ${color} color`}
                                                 />
                                             ))}
                                         </div>
                                     </div>
 
-                                    <div className="mt-4">
-                                        <label htmlFor="quantity" className="block text-xs font-medium text-gray-700">
+                                    <div className="mt-2">
+                                        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                             Quantity
                                         </label>
-                                        <div className="flex items-center mt-1">
+                                        <div className="mt-1 flex items-center">
                                             <button
                                                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                                                className="px-2 py-1 text-sm border border-gray-300 rounded-l-md bg-gray-100"
+                                                className="px-3 py-1 border border-gray-300 rounded-l-md bg-gray-50 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+                                                aria-label="Decrease quantity"
                                             >
                                                 -
                                             </button>
@@ -585,34 +755,39 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
                                                 min="1"
                                                 value={quantity}
                                                 onChange={handleQuantityChange}
-                                                className="w-12 px-2 py-1 text-sm border-t border-b border-gray-300 text-center"
+                                                className="w-16 px-2 py-1 text-center border-t border-b border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                aria-label="Quantity"
                                             />
                                             <button
                                                 onClick={() => setQuantity(prev => prev + 1)}
-                                                className="px-2 py-1 text-sm border border-gray-300 rounded-r-md bg-gray-100"
+                                                className="px-3 py-1 border border-gray-300 rounded-r-md bg-gray-50 text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+                                                aria-label="Increase quantity"
                                             >
                                                 +
                                             </button>
                                         </div>
-                                    </div>
-
-                                    <div className="mt-6 flex flex-col sm:flex-row gap-2">
-                                        <button
-                                            onClick={() => {
-                                                handleAddToCart(selectedProduct, quantity);
-                                                closeModal();
-                                            }}
-                                            className="flex-1 bg-indigo-600 py-2 px-4 text-sm border border-transparent rounded-md text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                                            disabled={!selectedProduct.inStock}
-                                        >
-                                            Add to Cart
-                                        </button>
-                                        <button
-                                            onClick={closeModal}
-                                            className="flex-1 bg-white py-2 px-4 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        >
-                                            Continue Shopping
-                                        </button>
+                                        <div className="flex justify-between gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    handleAddToCart(selectedProduct, quantity);
+                                                    closeModal();
+                                                }}
+                                                className={`w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${selectedProduct.inStock
+                                                        ? 'bg-indigo-600 hover:bg-indigo-700'
+                                                        : 'bg-gray-400 cursor-not-allowed'
+                                                    }`}
+                                                disabled={!selectedProduct.inStock}
+                                            >
+                                                Add to Cart
+                                            </button>
+                                            <button
+                                                onClick={closeModal}
+                                                className="w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 bg-gray-400 cursor-not-allowed"
+                                                aria-label="Continue Shopping"
+                                            >
+                                                Continue Shopping
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

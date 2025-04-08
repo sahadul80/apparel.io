@@ -18,35 +18,31 @@ const Content = ({
     className = ""
 }: FeatureSectionProps) => {
     return (
-        <section className={className}>
-            <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
-                <div className={`grid grid-cols-1 gap-4 md:grid-cols-4 md:items-center md:gap-8 ${reverse ? 'md:flex-row-reverse' : ''}`}>
-                    <div className="md:col-span-3">
+        <section className={`py-12 ${className}`}>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className={`grid grid-cols-1 md:grid-cols-2 items-center gap-8 ${reverse ? 'md:flex-row-reverse' : ''}`}>
+                    <div>
                         <Image
                             src={imageUrl}
-                            alt={title}
-                            width={2670}
-                            height={1780}
-                            className="rounded object-cover shadow-xl"
+                            alt={title || "Feature image"}
+                            width={800}
+                            height={600}
+                            layout="responsive"
+                            className="rounded-lg object-cover shadow-lg"
                             priority
                         />
                     </div>
-
-                    <div className="md:col-span-1">
-                        <div className="max-w-lg md:max-w-none">
-                            <h2 className="text-2xl font-semibold text-gray-900 sm:text-3xl">
-                                {title}
-                            </h2>
-
-                            <p className="mt-4 text-gray-700">
-                                {description}
-                            </p>
-
-                            <div className="mt-6">
-                                <button className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-600/20">
-                                    Learn More
-                                </button>
-                            </div>
+                    <div>
+                        <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+                            {title}
+                        </h2>
+                        <p className="mt-4 text-gray-600 leading-relaxed">
+                            {description}
+                        </p>
+                        <div className="mt-6">
+                            <button className="inline-block rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-600/20">
+                                Learn More
+                            </button>
                         </div>
                     </div>
                 </div>

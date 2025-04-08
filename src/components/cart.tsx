@@ -44,13 +44,13 @@ const Cart = ({ isOpen, closeCart, cartItems, updateQuantity, removeItem }: Cart
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'tween', ease: 'easeInOut' }}
-                        className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg flex flex-col z-50"
+                        className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg flex flex-col z-50 dark:bg-gray-900 text-indigo-600 dark:text-indigo-400"
                     >
-                        <div className="flex justify-between items-center p-4 border-b">
+                        <div className="flex justify-between items-center p-4 border-b dark:invert">
                             <h2 className="text-xl font-bold">Your Cart</h2>
                             <button
                                 onClick={closeCart}
-                                className="text-gray-600 hover:text-red-600 transition-colors"
+                                className="text-gray-600 hover:text-red-600 transition-colors dark:invert"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

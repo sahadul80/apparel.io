@@ -16,6 +16,53 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [openMenu, setOpenMenu] = useState<string | null>(null);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Set initial theme
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+            setIsDarkMode(true);
+        } else {
+            document.documentElement.classList.remove('dark');
+            setIsDarkMode(false);
+        }
+
+        // Update theme on system preference change
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+            if (!localStorage.getItem('theme')) {
+                setIsDarkMode(e.matches);
+                if (e.matches) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        };
+
+        mediaQuery.addEventListener('change', handleSystemThemeChange);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleSystemThemeChange);
+        };
+    }, []);
+
+    const toggleTheme = () => {
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+
+        if (newMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -36,7 +83,6 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
-    // Memoize dropdownItems to prevent unnecessary recreations
     const dropdownItems = useMemo(() => ({
         Shop: ['New Arrivals', 'Bestsellers', 'Sale'],
         Women: ['Dresses', 'Tops', 'Bottoms', 'Outerwear'],
@@ -44,12 +90,10 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
         Kids: ['Baby (0-24m)', 'Toddlers (2-5)', 'Kids (6-12)'],
         Accessories: ['Bags', 'Hats', 'Jewelry', 'Shoes'],
         Collections: ['Summer', 'Winter Essentials', 'Limited Edition'],
-    }), []); // Empty dependency array means this object is created once
+    }), []);
 
-    // Determine active main category based on pathname
     const activeCategory = useMemo(() => {
         if (!pathname) return null;
-
         const lowerPath = pathname.toLowerCase();
 
         for (const [category, items] of Object.entries(dropdownItems)) {
@@ -69,34 +113,34 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
 
     return (
         <motion.header
-            className="bg-white fixed w-full z-50 shadow-sm"
+            className="header-container"
             initial={{ y: 0 }}
             animate={{ y: isHeaderVisible ? 0 : -100 }}
             transition={{ type: 'smooth', stiffness: 100 }}
         >
-            <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
-                    <Link className="flex items-center gap-2" href="/">
+            <div className="header-content">
+                <div className="header-inner">
+                    <Link className="logo-link" href="/">
                         <span className="sr-only">apparel.io</span>
-                        <svg className="h-8 w-8 text-indigo-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                        <span className="text-xl font-bold text-indigo-600">apparel.io</span>
+                        <span className="logo-text">apparel.io</span>
                     </Link>
 
-                    <div className="hidden md:block">
+                    <div className="desktop-nav">
                         <nav aria-label="Global">
-                            <ul className="flex items-center gap-6 text-sm">
+                            <ul className="nav-list">
                                 {Object.entries(dropdownItems).map(([title, items]) => (
-                                    <li key={title} className="relative group">
+                                    <li key={title} className="nav-item">
                                         <Link
                                             href={`./pages/${title.toLowerCase()}`}
-                                            className={`text-gray-700 transition font-medium ${activeCategory === title ? 'text-indigo-600 border-b-2 border-indigo-600' : 'hover:text-indigo-600'}`}
+                                            className={`nav-link ${activeCategory === title ? 'active' : ''}`}
                                         >
                                             {title}
                                         </Link>
                                         <motion.div
-                                            className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block"
+                                            className="dropdown-menu"
                                             initial={{ opacity: 0, y: -10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.2 }}
@@ -105,7 +149,7 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                                                 <Link
                                                     key={item}
                                                     href={`./pages/${title.toLowerCase()}/${item.toLowerCase().replace(/\s+/g, '-')}`}
-                                                    className={`block px-4 py-2 text-sm ${pathname?.includes(item.toLowerCase().replace(/\s+/g, '-')) ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600'}`}
+                                                    className={`dropdown-item ${pathname?.includes(item.toLowerCase().replace(/\s+/g, '-')) ? 'active' : ''}`}
                                                 >
                                                     {item}
                                                 </Link>
@@ -117,26 +161,14 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                         </nav>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-4">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Search apparel..."
-                                className="rounded-md border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                            />
-                            <button className="absolute right-3 top-2.5 text-gray-400 hover:text-indigo-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </button>
-                        </div>
+                    <div className="desktop-actions">
                         <button
                             onClick={toggleCart}
-                            className="relative rounded-full bg-gray-100 p-2 text-gray-600 transition hover:text-indigo-600"
+                            className="cart-button"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
+                                className="cart-icon"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -149,28 +181,28 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                                 />
                             </svg>
                             {cartItemCount > 0 && (
-                                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+                                <span className="cart-badge">
                                     {cartItemCount}
                                 </span>
                             )}
                         </button>
                         <Link
-                            className="rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow hover:bg-indigo-700"
+                            className="account-button"
                             href="#"
                         >
                             Account
                         </Link>
                     </div>
 
-                    <div className="block md:hidden">
-                        <div className="flex items-center gap-4">
+                    <div className="mobile-actions">
+                        <div className="mobile-buttons">
                             <button
                                 onClick={toggleCart}
-                                className="relative rounded-full bg-gray-100 p-2 text-gray-600 transition hover:text-indigo-600"
+                                className="mobile-cart-button"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5"
+                                    className="mobile-cart-icon"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -183,25 +215,24 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                                     />
                                 </svg>
                                 {cartItemCount > 0 && (
-                                    <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+                                    <span className="mobile-cart-badge">
                                         {cartItemCount}
                                     </span>
                                 )}
                             </button>
                             <button
                                 onClick={toggleMobileMenu}
-                                className="rounded-full bg-gray-100 p-2 text-gray-600 transition hover:text-indigo-600"
+                                className="mobile-menu-button"
                             >
                                 <svg
                                     stroke="currentColor"
                                     strokeWidth="2"
-                                    className="h-5 w-5"
+                                    className="mobile-menu-icon"
                                     viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                 >
                                     <path
-                                        fill="#000000"
                                         fillRule="evenodd"
                                         d="M19 4a1 1 0 01-1 1H2a1 1 0 010-2h16a1 1 0 011 1zm0 6a1 1 0 01-1 1H2a1 1 0 110-2h16a1 1 0 011 1zm-1 7a1 1 0 100-2H2a1 1 0 100 2h16z"
                                     />
@@ -215,34 +246,34 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <motion.div
-                        className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                        className="mobile-menu-overlay"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={toggleMobileMenu}
                     >
                         <motion.div
-                            className="fixed top-0 right-0 h-full w-80 bg-white shadow-lg"
+                            className="mobile-menu-panel"
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', stiffness: 100 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="p-4 flex justify-between items-center border-b">
-                                <Link href="/" className="flex items-center gap-2" onClick={toggleMobileMenu}>
-                                    <svg className="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <div className="mobile-menu-header">
+                                <Link href="/" className="mobile-menu-logo" onClick={toggleMobileMenu}>
+                                    <svg className="mobile-logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
-                                    <span className="text-lg font-bold text-indigo-600">apparel.io</span>
+                                    <span className="mobile-logo-text">apparel.io</span>
                                 </Link>
                                 <button
                                     onClick={toggleMobileMenu}
-                                    className="text-gray-600 hover:text-red-600 transition-colors"
+                                    className="mobile-menu-close"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-6 w-6"
+                                        className="mobile-close-icon"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -252,31 +283,17 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                                     </svg>
                                 </button>
                             </div>
-                            <div className="p-4 border-b">
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Search apparel..."
-                                        className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                    />
-                                    <button className="absolute right-3 top-2.5 text-gray-400 hover:text-indigo-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <nav className="overflow-y-auto h-[calc(100%-180px)]">
-                                <ul className="space-y-1 p-4">
+                            <nav className="mobile-menu-content">
+                                <ul className="mobile-menu-list">
                                     {Object.entries(dropdownItems).map(([title, items]) => (
-                                        <li key={title}>
+                                        <li key={title} className="mobile-menu-item">
                                             <button
-                                                className={`w-full text-left py-3 px-4 font-medium flex justify-between items-center ${activeCategory === title ? 'text-indigo-600 bg-indigo-50 rounded-md' : 'text-gray-700'}`}
+                                                className={`mobile-menu-button ${openMenu === title ? 'open' : ''} ${activeCategory === title ? 'active' : ''}`}
                                                 onClick={() => setOpenMenu(openMenu === title ? null : title)}
                                             >
                                                 {title}
                                                 <svg
-                                                    className={`h-4 w-4 transition-transform ${openMenu === title ? 'rotate-180' : ''}`}
+                                                    className={`mobile-menu-chevron ${openMenu === title ? 'open' : ''}`}
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke="currentColor"
@@ -285,16 +302,16 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                                                 </svg>
                                             </button>
                                             {openMenu === title && (
-                                                <ul className="pl-6 pb-2">
+                                                <ul className="mobile-submenu">
                                                     {items.map((item) => {
                                                         const itemPath = `/${title.toLowerCase()}/${item.toLowerCase().replace(/\s+/g, '-')}`;
                                                         const isActive = pathname?.includes(item.toLowerCase().replace(/\s+/g, '-'));
 
                                                         return (
-                                                            <li key={item}>
+                                                            <li key={item} className="mobile-submenu-item">
                                                                 <Link
                                                                     href={itemPath}
-                                                                    className={`block py-2 px-4 rounded-md ${isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-500 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                                                                    className={`mobile-submenu-link ${isActive ? 'active' : ''}`}
                                                                     onClick={toggleMobileMenu}
                                                                 >
                                                                     {item}
@@ -308,10 +325,10 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                                     ))}
                                 </ul>
                             </nav>
-                            <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
+                            <div className="mobile-menu-footer">
                                 <Link
                                     href="#"
-                                    className="block w-full rounded-md bg-indigo-600 px-4 py-3 text-sm font-medium text-white text-center hover:bg-indigo-700"
+                                    className="mobile-account-button"
                                     onClick={toggleMobileMenu}
                                 >
                                     My Account

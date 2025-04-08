@@ -1,22 +1,29 @@
 import React from 'react';
+
 const CTA = () => {
     return (
         <section
-            className="overflow-hidden bg-[url(https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2670&auto=format&fit=crop)] bg-cover bg-top bg-no-repeat"
+            className="relative overflow-hidden bg-cover bg-center bg-no-repeat"
+            style={{
+                backgroundImage:
+                    'url(https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=2670&auto=format&fit=crop)',
+            }}
+            aria-label="Call to Action - Latest Shirts"
         >
-            <div className="bg-black/50 p-8 md:p-12 lg:px-16 lg:py-24">
-                <div className="text-center ltr:sm:text-left rtl:sm:text-right">
-                    <h2 className="text-2xl font-bold text-white sm:text-3xl md:text-5xl">Latest Shirts</h2>
-
-                    <p className="hidden max-w-lg text-white/90 md:mt-6 md:block md:text-lg md:leading-relaxed">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Inventore officia corporis quasi
-                        doloribus iure architecto quae voluptatum beatae excepturi dolores.
+            <div className="absolute inset-0 bg-black/50"></div>
+            <div className="relative z-10 p-8 md:p-12 lg:px-16 lg:py-24">
+                <div className="text-center sm:text-left">
+                    <h2 className="text-2xl font-bold text-white sm:text-3xl md:text-5xl">
+                        Latest Shirts
+                    </h2>
+                    <p className="hidden max-w-lg md:mt-6 md:block md:text-lg md:leading-relaxed text-gray-200">
+                        Discover the finest selection of shirts crafted with care and designed for every occasion.
+                        Comfort and style, all in one.
                     </p>
-
                     <div className="mt-4 sm:mt-8">
                         <a
                             href="#"
-                            className="inline-block rounded-full bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:ring-3 focus:ring-yellow-400 focus:outline-hidden"
+                            className="inline-block rounded-full bg-indigo-600 px-12 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50"
                         >
                             Get Yours Today
                         </a>

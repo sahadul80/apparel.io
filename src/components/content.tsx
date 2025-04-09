@@ -18,29 +18,29 @@ const Content = ({
     className = ""
 }: FeatureSectionProps) => {
     return (
-        <section className={`py-12 ${className}`}>
+        <section className={`py-16 dark:bg-gray-900 ${className}`}>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className={`grid grid-cols-1 md:grid-cols-2 items-center gap-8 ${reverse ? 'md:flex-row-reverse' : ''}`}>
-                    <div>
+                <div className={`grid grid-cols-1 md:grid-cols-2 items-center gap-12 ${reverse ? 'md:flex-row-reverse' : ''}`}>
+                    <div className={`${reverse ? 'md:order-2' : 'md:order-1'}`}>
                         <Image
                             src={imageUrl}
                             alt={title || "Feature image"}
                             width={800}
                             height={600}
                             layout="responsive"
-                            className="rounded-lg object-cover shadow-lg"
+                            className="rounded-lg object-cover shadow-lg dark:brightness-90 transition-all duration-300"
                             priority
                         />
                     </div>
-                    <div>
-                        <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+                    <div className={`${reverse ? 'md:order-1' : 'md:order-2'} space-y-6`}>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 sm:text-4xl">
                             {title}
                         </h2>
-                        <p className="mt-4 text-gray-600 leading-relaxed">
+                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
                             {description}
                         </p>
                         <div className="mt-6">
-                            <button className="inline-block rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-600/20">
+                            <button className="inline-block rounded-lg bg-indigo-600 px-8 py-3.5 text-sm font-medium text-white shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-600/20 transition-all duration-300 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-500/30">
                                 Learn More
                             </button>
                         </div>

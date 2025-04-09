@@ -1,10 +1,12 @@
 'use client';
-import { useState } from 'react';
-import Header from '../../../../components/header';
-import CTA from '../../../../components/CTA';
-import Cart from '../../../../components/cart';
-import Footer from '../../../../components/footer';
-import ProductCollection from '../../../../components/products';
+
+import { useState } from "react";
+import CTA from "../../../../components/CTA";
+import Cart from "../../../../components/cart";
+import Footer from "../../../../components/footer";
+import Header from "../../../../components/header";
+import ProductCollection from "../../../../components/products";
+
 export interface CartItem {
     id: number;
     name: string;
@@ -13,7 +15,7 @@ export interface CartItem {
     image: string;
 }
 
-const jewelryPage = () => {
+const JewelryPage = () => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
@@ -70,4 +72,4 @@ const jewelryPage = () => {
     );
 };
 
-export default jewelryPage;
+export default JewelryPage;

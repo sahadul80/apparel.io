@@ -3,6 +3,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import Alert from './alert';
+
+type AlertType = "error" | "warning" | "success";
 
 // Dynamically import Modal to avoid SSR issues
 const Modal = dynamic(() => import('react-modal'), {
@@ -276,19 +279,6 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         setSelectedColor('');
     };
 
-    const handleAddToCart = (product: Product, qty: number = 1) => {
-        if (!animatingProductId) {
-            setAnimatingProductId(product.id);
-        }
-        addToCart({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            quantity: qty,
-        });
-    };
-
     const onAnimationComplete = () => {
         setAnimatingProductId(null);
     };
@@ -350,8 +340,67 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
         );
     };
 
+    const [alertState, setAlertState] = useState<{
+        show: boolean;
+        type: AlertType;
+        title: string;
+        messages: string[];
+    }>({
+        show: false,
+        type: 'success',
+        title: '',
+        messages: [],
+    });
+
+    const handleAddToCart = (product: Product, qty: number = 1) => {
+        if (!animatingProductId) {
+            setAnimatingProductId(product.id);
+        }
+        addToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: qty,
+        });
+
+        // Show success alert
+        setAlertState({
+            show: true,
+            type: 'success',
+            title: 'Item Added to Cart',
+            messages: [`${product.name} has been added to your cart.`],
+        });
+    };
+
+    // Add auto-hide functionality
+    useEffect(() => {
+        if (alertState.show) {
+            const timer = setTimeout(() => {
+                setAlertState(prev => ({ ...prev, show: false }));
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [alertState.show]);
+
     return (
         <section className="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+            <AnimatePresence>
+                {alertState.show && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="fixed top-4 right-4 z-[1000] w-full max-w-md"
+                    >
+                        <Alert
+                            type={alertState.type}
+                            title={alertState.title}
+                            messages={alertState.messages}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
                 <header className="mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">Our Collection</h2>
@@ -704,9 +753,6 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
                                             <h2 className="text-l font-bold text-gray-900 dark:text-white">{selectedProduct.name}</h2>
                                             <div className="mt-1 flex items-center">
                                                 {renderStars(selectedProduct.rating)}
-                                                <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
-                                                    ({selectedProduct.rating} rating)
-                                                </span>
                                             </div>
                                         </div>
                                         <p className="text-l font-bold text-gray-900 dark:text-white">${selectedProduct.price.toFixed(2)}</p>
@@ -772,9 +818,9 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
                                                     handleAddToCart(selectedProduct, quantity);
                                                     closeModal();
                                                 }}
-                                                className={`w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer ${selectedProduct.inStock
-                                                        ? 'bg-indigo-600 hover:bg-indigo-700'
-                                                        : 'bg-gray-400 cursor-not-allowed'
+                                                className={`w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${selectedProduct.inStock
+                                                    ? 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer'
+                                                        : 'bg-gray-400 hover:cursor-not-allowed'
                                                     }`}
                                                 disabled={!selectedProduct.inStock}
                                             >

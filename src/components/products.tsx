@@ -772,7 +772,7 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
                                                     handleAddToCart(selectedProduct, quantity);
                                                     closeModal();
                                                 }}
-                                                className={`w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${selectedProduct.inStock
+                                                className={`w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer ${selectedProduct.inStock
                                                         ? 'bg-indigo-600 hover:bg-indigo-700'
                                                         : 'bg-gray-400 cursor-not-allowed'
                                                     }`}
@@ -782,7 +782,7 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
                                             </button>
                                             <button
                                                 onClick={closeModal}
-                                                className="w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 bg-gray-400 cursor-not-allowed"
+                                                className="w-full mt-2 rounded-md py-2 px-4 text-sm font-small text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 bg-gray-400 cursor-pointer"
                                                 aria-label="Continue Shopping"
                                             >
                                                 Continue Shopping

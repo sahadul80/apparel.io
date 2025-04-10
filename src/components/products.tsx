@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import Alert from './alert';
 
-type AlertType = "error" | "warning" | "success";
+export type AlertType = "error" | "warning" | "success";
 
 // Dynamically import Modal to avoid SSR issues
 const Modal = dynamic(() => import('react-modal'), {
@@ -33,11 +33,12 @@ type Filters = {
     rating?: number;
 };
 
-type CartItem = {
+export type CartItem = {
     id: number;
     name: string;
     price: number;
     image: string;
+    color: string[];
     quantity: number;
 };
 
@@ -290,11 +291,11 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
             x: 400,
             y: -300,
             opacity: [1, 0.5, 0],
-            transition: { duration: 0.4, ease: 'easeInOut' },
+            transition: { duration: 0.3, ease: 'easeInOut' },
         },
         hover: {
-            scale: 1.02,
-            transition: { duration: 0.2 },
+            scale: 1.05,
+            transition: { duration: 0.1 },
         },
     };
 
@@ -360,6 +361,7 @@ const ProductCollection: React.FC<ProductCollectionProps> = ({ addToCart }) => {
             id: product.id,
             name: product.name,
             price: product.price,
+            color: product.colors,
             image: product.image,
             quantity: qty,
         });

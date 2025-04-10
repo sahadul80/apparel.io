@@ -6,7 +6,7 @@ import Cart from '../components/cart';
 import Footer from '../components/footer';
 import ProductCollection from '../components/products';
 import Content from '../components/content';
-import HeroSection from '../components/hero';
+import ApparelCarousel from '../components/carousel';
 // Define interface for cart items
 export interface CartItem {
     id: number;
@@ -65,12 +65,7 @@ const HomePage = () => {
                 updateQuantity={updateQuantity}
                 removeItem={removeFromCart}
             />
-            <HeroSection
-                title="Optimize customer journey and"
-                subtitle="Transform user experience with data-driven insights and seamless interactions."
-                ctaPrimary="Start Free Trial"
-                ctaSecondary="Watch Demo"
-            />
+            <ApparelCarousel addToCart={addToCart} />
             <Content />
             <ProductCollection addToCart={addToCart} />
             <CTA />

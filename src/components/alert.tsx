@@ -82,8 +82,8 @@ const Alert: React.FC<AlertProps> = ({
     const { border, iconBg, titleColor, textColor, icon } = config[type];
 
     return (
-        <div className="py-6 px-4 bg-gray-50 dark:bg-gray-800">
-            <div className="max-w-2xl mx-auto">
+        <div className="bg-transparent py-6 px-4 bg-gray-50 dark:bg-gray-800">
+            <div className="max-w-l mx-auto">
                 <div
                     className={`flex items-start md:items-center rounded-lg border-l-4 ${border} bg-white dark:bg-gray-900 shadow-md p-4 md:p-6`}
                 >

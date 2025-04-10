@@ -207,7 +207,7 @@ const Header = ({ toggleCart, cartItemCount }: HeaderProps) => {
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
-                            transition={{ type: 'spring', stiffness: 100 }}
+                            transition={{ type: 'spring', stiffness: 85 }}
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">

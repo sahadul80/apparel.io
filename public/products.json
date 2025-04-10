@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Premium Winter Parka",
+    "price": 249.99,
+    "discountedPrice": 199.99,
+    "category": "winter-essentials",
+    "image": "/parka.jpg",
+    "inStock": true,
+    "colors": [ "#2C3333", "#395B64", "#A5C9CA" ],
+    "description": "Waterproof down-filled jacket with faux fur trim hood",
+    "rating": 4.8
+  },
+  {
+    "id": 2,
+    "name": "Floral Maxi Dress",
+    "price": 89.95,
+    "discountedPrice": 89.95,
+    "category": "new-arrivals",
+    "image": "/maxi.jpg",
+    "inStock": true,
+    "colors": [ "#FF69B4", "#FFFFFF", "#000000" ],
+    "description": "Lightweight chiffon dress with adjustable waist tie",
+    "rating": 4.5
+  },
+  {
+    "id": 3,
+    "name": "High-Waisted Yoga Pants",
+    "price": 65.00,
+    "discountedPrice": 45.50,
+    "category": "activewear",
+    "image": "/yogapants.jpg",
+    "inStock": false,
+    "colors": [ "#4B0082", "#808080", "#FFFFFF" ],
+    "rating": 4.7
+  },
+  {
+    "id": 4,
+    "name": "Limited Edition Sneakers",
+    "price": 150.00,
+    "discountedPrice": 150.00,
+    "category": "limited-edition",
+    "image": "/sneakers.jpg",
+    "inStock": true,
+    "colors": [ "#FFD700", "#000000", "#FF0000" ],
+    "description": "Collaboration series with designer embossed details",
+    "rating": 4.9
+  },
+  {
+    "id": 5,
+    "name": "Knit Cable Sweater",
+    "price": 75.00,
+    "discountedPrice": 55.00,
+    "category": "bestsellers",
+    "image": "/sweater.jpg",
+    "inStock": true,
+    "colors": [ "#8B4513", "#228B22", "#D2B48C" ],
+    "rating": 4.6
+  },
+  {
+    "id": 6,
+    "name": "Denim Jacket",
+    "price": 120.00,
+    "discountedPrice": 120.00,
+    "category": "jackets",
+    "image": "/denimjacket.jpg",
+    "inStock": true,
+    "colors": [ "#00008B", "#FFFFFF", "#1E90FF" ],
+    "description": "Classic trucker jacket with distressed details",
+    "rating": 4.4
+  }
+]

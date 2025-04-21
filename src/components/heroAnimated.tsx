@@ -1,4 +1,4 @@
-// components/HeroSection.tsx
+'uae client'
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import axios from "axios";
@@ -103,7 +103,7 @@ const HeroSection: React.FC = () => {
     if (error || !heroData) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-900 text-red-400">
-                ?? {error || "Content unavailable"}
+                {error || "Content unavailable"}
             </div>
         );
     }

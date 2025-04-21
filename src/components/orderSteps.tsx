@@ -1,5 +1,5 @@
+'use client'
 import React from "react";
-
 interface OrderStepProps {
     step: number;
     onNext: () => void;

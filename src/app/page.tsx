@@ -7,6 +7,8 @@ import Footer from '../components/footer';
 import ProductCollection from '../components/products';
 import Content from '../components/content';
 import ApparelCarousel from '../components/carousel';
+import HeroSection from '../components/heroAnimated';
+import Order from '../components/order';
 // Define interface for cart items
 export interface CartItem {
     id: number;
@@ -65,7 +67,9 @@ const HomePage = () => {
                 updateQuantity={updateQuantity}
                 removeItem={removeFromCart}
             />
+            <HeroSection />
             <ApparelCarousel addToCart={addToCart} />
+            <Order />
             <Content />
             <ProductCollection addToCart={addToCart} />
             <CTA />

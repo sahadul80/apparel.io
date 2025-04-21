@@ -11,7 +11,7 @@ interface HeroSectionProps {
     highlightWord?: string;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({
+const Hero: React.FC<HeroSectionProps> = ({
     title = "Understand user flow and",
     subtitle = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque, nisi. Natus, provident accusamus impedit minima harum corporis iusto.",
     ctaPrimary = "Get Started",
@@ -71,4 +71,4 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     );
 };
 
-export default HeroSection;
+export default Hero;

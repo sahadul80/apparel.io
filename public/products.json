@@ -55,13 +55,13 @@
     "image": "/sweater.jpg",
     "inStock": true,
     "colors": [ "#8B4513", "#228B22", "#D2B48C" ],
-    "rating": 4.6
+    "rating": 0
   },
   {
     "id": 6,
     "name": "Denim Jacket",
     "price": 120.00,
-    "discountedPrice": 120.00,
+    "discountedPrice": 0,
     "category": "jackets",
     "image": "/denimjacket.jpg",
     "inStock": true,

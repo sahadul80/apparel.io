@@ -35,7 +35,8 @@ export type Product = {
     id: number;
     name: string;
     price: number;
-    discountedPrice: number;
+    quantity: number;
+    discountedPrice?: number;
     category: Category;
     image: string;
     inStock: boolean;
@@ -49,12 +50,9 @@ interface ApparelCarouselProps {
 }
 
 const ApparelCarousel: React.FC<ApparelCarouselProps> = ({ addToCart }) => {
-    // State for products fetched from API
     const [products, setProducts] = useState<Product[]>([]);
-    // State for modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    // States for modal functionalities
     const [selectedColor, setSelectedColor] = useState<string>('');
     const [quantity, setQuantity] = useState<number>(1);
 
@@ -133,7 +131,6 @@ const ApparelCarousel: React.FC<ApparelCarouselProps> = ({ addToCart }) => {
         fetchProducts();
     }, []);
 
-    // Add auto-hide functionality
     useEffect(() => {
         if (alertState.show) {
             const timer = setTimeout(() => {

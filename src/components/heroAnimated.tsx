@@ -1,4 +1,4 @@
-'uae client'
+'use client'
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import axios from "axios";
